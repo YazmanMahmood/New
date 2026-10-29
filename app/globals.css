@@ -1,0 +1,459 @@
+@import "tailwindcss";
+
+/*
+  Theme system
+  ------------
+  Every section is either "tone-a" (primary surface) or "tone-b" (alternate surface).
+  The active mission mode (html[data-mode]) decides what each tone looks like.
+  Components only use the semantic utilities below (bg-bg, text-fg, text-muted,
+  border-line, text-signal, text-alarm, bg-accent, text-accent-text ...), so the
+  whole site re-themes when the mode changes.
+*/
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-signal: var(--signal);
+  --color-alarm: var(--alarm);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-text: var(--accent-text);
+  --color-brand-red: #d7263d;
+  --color-brand-green: #2bb673;
+
+  --font-display: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Default: dark primary surface, light alternate surface, red accent */
+:root {
+  --accent: #d7263d;
+  --accent-ink: #ffffff;
+
+  --a-bg: #0a0a0a;
+  --a-fg: #ffffff;
+  --a-muted: #8a8f98;
+  --a-line: rgba(255, 255, 255, 0.12);
+  --a-signal: #2bb673;
+  --a-alarm: #ee4a5e;
+  --a-accent: #ee4a5e;
+
+  --b-bg: #f5f5f4;
+  --b-fg: #0a0a0a;
+  --b-muted: #5b6068;
+  --b-line: rgba(10, 10, 10, 0.12);
+  --b-signal: #1a7f4e;
+  --b-alarm: #c21f35;
+  --b-accent: #c21f35;
+
+  --grid-color: rgba(255, 255, 255, 0.035);
+  --grid-color-b: transparent;
+}
+
+/* Industrial: clean engineering, light surfaces, green accent, blueprint grid */
+html[data-mode="industrial"] {
+  --accent: #2bb673;
+  --accent-ink: #0a0a0a;
+
+  --a-bg: #ffffff;
+  --a-fg: #0a0a0a;
+  --a-muted: #5b6068;
+  --a-line: rgba(10, 10, 10, 0.12);
+  --a-signal: #1a7f4e;
+  --a-alarm: #c21f35;
+  --a-accent: #1a7f4e;
+
+  --b-bg: #f5f5f4;
+  --b-fg: #0a0a0a;
+  --b-muted: #5b6068;
+  --b-line: rgba(10, 10, 10, 0.12);
+  --b-signal: #1a7f4e;
+  --b-alarm: #c21f35;
+  --b-accent: #1a7f4e;
+
+  --grid-color: rgba(26, 127, 78, 0.08);
+  --grid-color-b: rgba(26, 127, 78, 0.08);
+}
+
+/* Security: persistent watch, dark grey surfaces, green accent */
+html[data-mode="security"] {
+  --accent: #2bb673;
+  --accent-ink: #0a0a0a;
+
+  --a-bg: #111315;
+  --a-fg: #ffffff;
+  --a-muted: #8a8f98;
+  --a-line: rgba(255, 255, 255, 0.1);
+  --a-signal: #2bb673;
+  --a-alarm: #ee4a5e;
+  --a-accent: #2bb673;
+
+  --b-bg: #1a1d21;
+  --b-fg: #ffffff;
+  --b-muted: #8a8f98;
+  --b-line: rgba(255, 255, 255, 0.1);
+  --b-signal: #2bb673;
+  --b-alarm: #ee4a5e;
+  --b-accent: #2bb673;
+
+  --grid-color: transparent;
+  --grid-color-b: transparent;
+}
+
+/* Defense: tactical, black surfaces, red accent */
+html[data-mode="defense"] {
+  --accent: #d7263d;
+  --accent-ink: #ffffff;
+
+  --a-bg: #050505;
+  --a-fg: #ffffff;
+  --a-muted: #8a8f98;
+  --a-line: rgba(255, 255, 255, 0.1);
+  --a-signal: #2bb673;
+  --a-alarm: #ee4a5e;
+  --a-accent: #ee4a5e;
+
+  --b-bg: #111315;
+  --b-fg: #ffffff;
+  --b-muted: #8a8f98;
+  --b-line: rgba(255, 255, 255, 0.1);
+  --b-signal: #2bb673;
+  --b-alarm: #ee4a5e;
+  --b-accent: #ee4a5e;
+
+  --grid-color: transparent;
+  --grid-color-b: transparent;
+}
+
+.tone-a {
+  --bg: var(--a-bg);
+  --fg: var(--a-fg);
+  --muted: var(--a-muted);
+  --line: var(--a-line);
+  --signal: var(--a-signal);
+  --alarm: var(--a-alarm);
+  --accent-text: var(--a-accent);
+  --grid: var(--grid-color);
+}
+
+.tone-b {
+  --bg: var(--b-bg);
+  --fg: var(--b-fg);
+  --muted: var(--b-muted);
+  --line: var(--b-line);
+  --signal: var(--b-signal);
+  --alarm: var(--b-alarm);
+  --accent-text: var(--b-accent);
+  --grid: var(--grid-color-b);
+}
+
+.tone-a,
+.tone-b {
+  background-color: var(--bg);
+  color: var(--fg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transition:
+    background-color 0.6s ease,
+    color 0.6s ease;
+}
+
+/* Smoothly re-colour borders and text when the mode changes */
+.theme-fade {
+  transition:
+    border-color 0.6s ease,
+    background-color 0.6s ease,
+    color 0.6s ease,
+    opacity 0.4s ease;
+}
+
+/* Large displays (24" and up): widen the page container (max-w-7xl) so the
+   header and sections use the screen instead of a narrow centre column */
+@media (min-width: 1600px) {
+  :root {
+    --container-7xl: min(calc(100vw - 12rem), 125rem);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--a-bg);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- Mode effects ---------- */
+
+/* Security: faint scanlines across the screen */
+html[data-mode="security"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 70;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.022) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+/* Defense: red edge glow */
+html[data-mode="defense"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 70;
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(215, 38, 61, 0.14) 100%);
+}
+
+/* Reticle corners on product cards are only visible in defense mode */
+.reticle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+html[data-mode="defense"] .reticle {
+  opacity: 1;
+}
+
+/* Type widths. One family (Archivo), three voices:
+   wide for headlines, normal for reading, narrow for specs and labels. */
+.wide {
+  font-stretch: 116%;
+}
+.xwide {
+  font-stretch: 125%;
+}
+.narrow {
+  font-stretch: 80%;
+}
+
+/* Image placeholder */
+.image-slot {
+  position: relative;
+  border: 1px dashed var(--line);
+  background-color: color-mix(in srgb, var(--fg) 3%, transparent);
+  color: var(--muted);
+  overflow: hidden;
+}
+.image-slot::before {
+  /* faint diagonal hatch so empty slots read as "to be filled" */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--fg) 4%, transparent) 0 1px,
+    transparent 1px 14px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Motion ---------- */
+
+/* Loading splash (components/layout/Splash.tsx) */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: var(--a-bg);
+  color: var(--a-fg);
+  transition:
+    opacity 0.6s ease,
+    visibility 0.6s ease;
+  /* Fallback if JavaScript never runs: get out of the way after 6 s */
+  animation: splash-fallback 0s linear 6s forwards;
+}
+.splash-leaving {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+@keyframes splash-fallback {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+/* Eagle masked over a gradient; moving the gradient sweeps light across the outline */
+.splash-logo {
+  display: block;
+  width: 150px;
+  height: 61px;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, currentColor 30%, transparent) 35%,
+    currentColor 50%,
+    color-mix(in srgb, currentColor 30%, transparent) 65%
+  );
+  background-size: 300% 100%;
+  animation:
+    splash-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both,
+    splash-sweep 1.6s ease-in-out 0.2s infinite;
+}
+@keyframes splash-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.94);
+  }
+}
+@keyframes splash-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.splash-bar {
+  position: relative;
+  display: block;
+  width: 120px;
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+.splash-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--color-brand-red);
+  animation: splash-bar 1.1s ease-in-out infinite;
+}
+@keyframes splash-bar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Hard on/off blink for terminal-style cursors (components/ui/DecodeText.tsx) */
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Outlined display text */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--fg);
+}
+
+/* Section tag ("The solution", "Applications" ...): bold red text, always brand red */
+.tag {
+  display: block;
+  width: fit-content;
+  color: var(--color-brand-red);
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 768px) {
+  .tag {
+    font-size: 1.25rem;
+  }
+}
+
+/* Mission map (components/ui/MissionMap.tsx) */
+.mm-rotor {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mm-spin 0.35s linear infinite;
+}
+@keyframes mm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mm-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mm-ping 1.6s ease-out infinite;
+}
+@keyframes mm-ping {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mm-rotor,
+  .mm-ping {
+    animation: none;
+  }
+}
+
+/* Long-form text on /privacy: bullets, readable links */
+.prose-policy ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.prose-policy li + li {
+  margin-top: 0.5rem;
+}
+.prose-policy a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.prose-policy strong {
+  color: var(--fg);
+  font-weight: 600;
+}

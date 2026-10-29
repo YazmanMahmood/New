@@ -1,0 +1,150 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "submissionCounter": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1"
+    },
+    "customOrderCounter": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1"
+    },
+    "downloadCounter": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.isNumber() && newData.val() === (data.exists() ? data.val() : 0) + 1"
+    },
+    "Submissions": {
+      "$id": {
+        ".write": "!data.exists() && newData.exists() && $id.matches(/^submission[0-9]+$/)",
+        ".validate": "newData.hasChildren(['number', 'name', 'email', 'message', 'page', 'submittedAt', 'submittedAtLocal', 'visitor']) && $id === 'submission' + newData.child('number').val() && newData.child('number').val() <= root.child('submissionCounter').val()",
+        "number": {
+          ".validate": "newData.isNumber()"
+        },
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().contains('@') && newData.val().length <= 320"
+        },
+        "message": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 5000"
+        },
+        "page": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "submittedAt": {
+          ".validate": "newData.val() === now"
+        },
+        "submittedAtLocal": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "visitor": {
+          "$field": {
+            ".validate": "newData.isString() && newData.val().length <= 600"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "CustomOrders": {
+      "$id": {
+        ".write": "!data.exists() && newData.exists() && $id.matches(/^customorder[0-9]+$/)",
+        ".validate": "newData.hasChildren(['number', 'request', 'contact', 'page', 'submittedAt', 'submittedAtLocal', 'visitor']) && $id === 'customorder' + newData.child('number').val() && newData.child('number').val() <= root.child('customOrderCounter').val()",
+        "number": {
+          ".validate": "newData.isNumber()"
+        },
+        "request": {
+          ".validate": "newData.hasChildren(['rangeKm', 'droneType', 'usage', 'notes'])",
+          "rangeKm": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 100000"
+          },
+          "droneType": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+          },
+          "usage": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 500"
+          },
+          "notes": {
+            ".validate": "newData.isString() && newData.val().length <= 5000"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "contact": {
+          ".validate": "newData.hasChildren(['name', 'email', 'phone'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+          },
+          "email": {
+            ".validate": "newData.isString() && newData.val().contains('@') && newData.val().length <= 320"
+          },
+          "phone": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "page": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "submittedAt": {
+          ".validate": "newData.val() === now"
+        },
+        "submittedAtLocal": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "visitor": {
+          "$field": {
+            ".validate": "newData.isString() && newData.val().length <= 600"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "CatalogueDownloads": {
+      "$id": {
+        ".write": "!data.exists() && newData.exists() && $id.matches(/^download[0-9]+$/)",
+        ".validate": "newData.hasChildren(['number', 'name', 'email', 'phone', 'page', 'submittedAt', 'submittedAtLocal', 'visitor']) && $id === 'download' + newData.child('number').val() && newData.child('number').val() <= root.child('downloadCounter').val()",
+        "number": {
+          ".validate": "newData.isNumber()"
+        },
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 200"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val().contains('@') && newData.val().length <= 320"
+        },
+        "phone": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "page": {
+          ".validate": "newData.isString() && newData.val().length <= 200"
+        },
+        "submittedAt": {
+          ".validate": "newData.val() === now"
+        },
+        "submittedAtLocal": {
+          ".validate": "newData.isString() && newData.val().length <= 60"
+        },
+        "visitor": {
+          "$field": {
+            ".validate": "newData.isString() && newData.val().length <= 600"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}
